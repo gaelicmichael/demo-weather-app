@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   entryWrapper: {
   },
   cityNameEntry: {
-    width: '185px',
+    width: '200px',
   },
   iconBtn: {
     cursor: 'pointer',
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
   recentLocs: {
     margin: theme.spacing(1),
-    fontSize: '10px',
+    fontSize: '14px',
     color: 'grey',
     height: '14px',
   },
@@ -48,10 +48,15 @@ const useStyles = makeStyles((theme) => ({
   },
   cityText: {
     cursor: 'pointer',
+    padding: '3px',
+    marginRight: '4px',
   },
   cityActive: {
     backgroundColor: 'white',
     color: 'black',
+  },
+  clearBtn: {
+    float: 'right',
   },
   modal: {
     display: 'flex',
@@ -85,6 +90,9 @@ function CitiesPane() {
 
   function clickAddCity() {
     const tryCity = cityName.trim();
+    if (tryCity.length === 0) {
+      return;
+    }
     const URLparams = `http://api.openweathermap.org/data/2.5/weather?q=${tryCity}&appid=c51223c219d6aec8cb8c5210449bd859&units=metric`;
     fetch(URLparams)
       .then(response => response.json())
@@ -160,7 +168,7 @@ function CitiesPane() {
         )
       })}
       </List>
-      <Button variant="contained" onClick={clickClear}>Clear</Button>
+      <Button variant="contained" className={paneClasses.clearBtn} onClick={clickClear}>Clear</Button>
       <Modal className={paneClasses.modal} open={errorModalIsOpen} onClose={handleCloseModal} aria-labelledby="Error">
         <div style={modalPosStyle} className={paneClasses.modalPaper}>
           The city {cityName} cannot be found. Please try again with another name.

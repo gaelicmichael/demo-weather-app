@@ -27,7 +27,16 @@ const useStyles = makeStyles((theme) => ({
   wrapper: {
     margin: theme.spacing(1),
   },
+  bigWeatherWrapper: {
+    width: '100%',
+    height: '100%',
+  },
   bigWeatherIcon: {
+    position: 'relative',
+    top: '50%',
+    left: '50%',
+    marginTop: '-40px',
+    marginLeft: '-40px',
     width: '80px',
     height: '80px',
     backgroundColor: 'lightblue',
@@ -43,6 +52,10 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+  },
+  iconBtn: {
+    cursor: 'pointer',
+    border: '1px white dotted',
   }
 }));
 
@@ -60,25 +73,33 @@ function WeatherDisplayPane() {
   const [pressure, setPressure] = useState('');
   const [days, setDays] = useState([]);
 
+  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
   function fetchCityData() {
     if (hasSelection) {
       const URLparams = `http://api.openweathermap.org/data/2.5/forecast?q=${cityName}&cnt=${numDaysForecast}&appid=c51223c219d6aec8cb8c5210449bd859&units=metric`;
       fetch(URLparams)
       .then(response => response.json())
       .then(function(apiData) {
-console.log('API returned ', apiData);
         if ((apiData.cod === 200) || (apiData.cod === '200')) {
-          let thisDay = apiData.list[0];
-          setIcon(thisDay.weather[0].icon);
-          setTemp(thisDay.main.temp);
-          setWeather(thisDay.weather[0].main);
-          setWind(thisDay.wind.speed + ' ' + thisDay.wind.deg);
-          setPressure(thisDay.main.pressure);
+          let forecast = apiData.list[0];
+          setIcon(forecast.weather[0].icon);
+          setTemp(forecast.main.temp);
+          setWeather(forecast.weather[0].main);
+          setWind(forecast.wind.speed + 'ms ' + forecast.wind.deg);
+          setPressure(forecast.main.pressure);
           let newDays = [];
+          let today = new Date();
 
           for (let dayI = 1; dayI < numDaysForecast; dayI++) {
-            thisDay = apiData.list[dayI];
-            newDays.push({ day: 'Someday', date: dayI, icon: thisDay.weather[0].icon, temp: thisDay.main.temp });
+            today.setDate(today.getDate() + 1);
+            forecast = apiData.list[dayI];
+            newDays.push({
+              day: dayNames[today.getDay()],
+              date: today.getDate(),
+              icon: forecast.weather[0].icon,
+              temp: forecast.main.temp,
+            });
           }
           setDays(newDays);
         }
@@ -103,9 +124,11 @@ console.log('API returned ', apiData);
       </Grid>
       <Grid container spacing={1}>
         <Grid item xs={6}>
-          { (hasSelection && (icon !== '#'))  &&
-            <img className={paneClasses.bigWeatherIcon} alt={weather} src={`http://openweathermap.org/img/wn/${icon}@2x.png`} />
-          }
+          <div className={paneClasses.bigWeatherWrapper}>
+            { (hasSelection && (icon !== '#'))  &&
+              <img className={paneClasses.bigWeatherIcon} alt={weather} src={`http://openweathermap.org/img/wn/${icon}@2x.png`} />
+            }
+          </div>
         </Grid>
         <Grid item xs={6}>
           { hasSelection &&
@@ -127,6 +150,7 @@ console.log('API returned ', apiData);
         </Grid>
       </Grid>
       <Grid container spacing={2}>
+        <Grid item xs={1} />
         { (hasSelection && (days.length > 0)) &&
           days.map((thisDay) => 
             <Grid item xs={2} className={paneClasses.eachDay} key={thisDay.date}>
