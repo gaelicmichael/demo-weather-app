@@ -26,6 +26,8 @@ const numDaysForecast = 6;
 const useStyles = makeStyles((theme) => ({
   wrapper: {
     margin: theme.spacing(1),
+    padding: theme.spacing(1),
+    border: '1px grey dotted',
   },
   bigWeatherWrapper: {
     width: '100%',
@@ -105,7 +107,7 @@ function WeatherDisplayPane() {
         }
       });
     }
-  }
+  } // fetchCityData()
 
   useEffect(fetchCityData, [weatherState.citySelected]);
 
@@ -119,7 +121,7 @@ function WeatherDisplayPane() {
         </Grid>
         <Grid item xs={5} />
         <Grid item xs={1}>
-          <CachedIcon fontSize="small" className={paneClasses.iconBtn} onClick={fetchCityData} />
+          <CachedIcon className={paneClasses.iconBtn} onClick={fetchCityData} />
         </Grid>
       </Grid>
       <Grid container spacing={1}>
@@ -166,6 +168,6 @@ function WeatherDisplayPane() {
       </Grid>
     </div>
   )
-}
+} // WeatherDisplayPane()
 
 export default WeatherDisplayPane;

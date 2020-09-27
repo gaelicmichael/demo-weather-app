@@ -7,9 +7,10 @@
 // Error from weather API looks like this: {"cod":"404","message":"city not found"}
 // Good data looks like: {"coord":{"lon":-0.13,"lat":51.51},"weather":[{"id":800,"main":"Clear","description":"clear sky","icon":"01n"}],"base":"stations","main":{"temp":8.99,"feels_like":3.87,"temp_min":7.78,"temp_max":10,"pressure":1000,"humidity":76},"visibility":10000,"wind":{"speed":5.7,"deg":250},"clouds":{"all":0},"dt":1600908871,"sys":{"type":1,"id":1414,"country":"GB","sunrise":1600926619,"sunset":1600970073},"timezone":3600,"id":2643743,"name":"London","cod":200}
 
-import React, { Fragment, useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -23,40 +24,38 @@ import ClearIcon from '@material-ui/icons/Clear';
 import { WeatherContext } from '../WeatherContext';
 
 const useStyles = makeStyles((theme) => ({
-  formWrapper: {
+  cityWrapper: {
     margin: theme.spacing(1),
     padding: theme.spacing(1),
+    border: '1px grey dotted',
+  },
+  formWrapper: {
     display: 'flex',
     alignItems: 'flex-end',
   },
   entryWrapper: {
   },
   cityNameEntry: {
-    width: '200px',
   },
   iconBtn: {
     cursor: 'pointer',
     border: '1px dotted white',
   },
   recentLocs: {
-    margin: theme.spacing(1),
     fontSize: '14px',
     color: 'grey',
-    height: '14px',
+    borderBottom: '1px grey dotted',
   },
   cityRow: {
+    borderBottom: '1px white dotted',
   },
   cityText: {
     cursor: 'pointer',
-    padding: '3px',
     marginRight: '4px',
   },
   cityActive: {
     backgroundColor: 'white',
     color: 'black',
-  },
-  clearBtn: {
-    float: 'right',
   },
   modal: {
     display: 'flex',
@@ -139,7 +138,7 @@ function CitiesPane() {
   }
 
   return (
-    <Fragment>
+    <div className={paneClasses.cityWrapper}>
       <form noValidate autoComplete="off" className={paneClasses.formWrapper}>
         <div className={paneClasses.entryWrapper}>
           <TextField id="cityname" className={paneClasses.cityNameEntry} label="Type city name"
@@ -168,14 +167,16 @@ function CitiesPane() {
         )
       })}
       </List>
-      <Button variant="contained" className={paneClasses.clearBtn} onClick={clickClear}>Clear</Button>
+      <Grid container direction="row" justify="flex-end" alignItems="flex-end">
+        <Button variant="contained" onClick={clickClear}>Clear</Button>
+      </Grid>
       <Modal className={paneClasses.modal} open={errorModalIsOpen} onClose={handleCloseModal} aria-labelledby="Error">
         <div style={modalPosStyle} className={paneClasses.modalPaper}>
           The city {cityName} cannot be found. Please try again with another name.
         </div>
       </Modal>
-    </Fragment>
+    </div>
   )
-}
+} // CitiesPane()
 
 export default CitiesPane;
